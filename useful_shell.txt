@@ -1,0 +1,728 @@
+# Start new gnome-keyring-daemon instead of killed
+/usr/bin/gnome-keyring-daemon -r --daemonize
+
+# Restart compiz
+setsid compiz --replace
+
+
+ls -R | egrep '\.orig(\*|$)'
+ls -R | egrep '\.rej(\*|$)'
+find . -name "*.rej"
+find . -type f -name "*.orig" -exec rm -f {} \;
+
+repo forall -p -c 'git format-patch LiQUID_8974_Eng_Build_Rev_8.04_JB --stdout -p --src-prefix=$PWD/ --dst-prefix=$PWD/ >> /local/mnt/workspace/LALIQUIDSW-579/QCA6234_enablement.patch'
+
+repo forall -p -c 'git format-patch --stdout -p --src-prefix=$PWD/ --dst-prefix=$PWD/ >> /local/mnt/workspace/LALIQUIDSW-616/QCA6234_enablement.patch'
+
+
+# List git-ignored files
+git ls-files . --ignored --exclude-standard --others
+
+# List untracked files
+git ls-files . --exclude-standard --others
+
+# Clean git
+
+#To remove directories
+git clean -fd
+
+#To remove ignored files
+git clean -fX
+
+#To remove ignored and non-ignored files
+git clean -fx
+
+# Git diff to Meld
+git difftool master..devel
+
+Kernel msm-3.4
+git push ssh://review-android.quicinc.com:29418/kernel/msm HEAD:refs/for/msm-3.4
+
+Kernel msm-3.10
+git push ssh://review-android.quicinc.com:29418/kernel/msm-3.10 HEAD:refs/for/msm-3.10
+
+Kernel msm-3.14
+git push ssh://review-android.quicinc.com:29418/kernel/msm-3.14 HEAD:refs/for/msm-3.14
+git push ssh://review-android.quicinc.com:29418/kernel/msm-3.18 HEAD:refs/for/msm-3.18
+
+Bootloader
+git push ssh://review-android.quicinc.com:29418/kernel/lk HEAD:refs/for/master
+git push ssh://review-android.quicinc.com:29418/kernel/lk HEAD:refs/for/LA.HB.1.3.1
+git push ssh://review-android.quicinc.com:29418/kernel/lk HEAD:refs/for/IMM.LE.1.0
+
+device/qcom/common
+git push ssh://review-android.quicinc.com:29418/device/qcom/common HEAD:refs/for/kk
+git push ssh://review-android.quicinc.com:29418/device/qcom/common HEAD:refs/for/l_master
+git push ssh://review-android.quicinc.com:29418/device/qcom/common HEAD:refs/for/LA.HB.1.3.1
+
+packages/apps/Camera
+git push ssh://ilial@review-android.quicinc.com:29418/platform/packages/apps/Camera HEAD:refs/for/jb_mr1
+
+vendor/qcom/proprietary/common
+git push ssh://ilial@review-android.quicinc.com:29418/platform/vendor/qcom-proprietary/ship/common HEAD:refs/for/master
+
+.repo/manifests
+git push ssh://ilial@review-android.quicinc.com:29418/platform/manifest HEAD:refs/for/jb_mr2
+
+hardware/qcom/bt
+git push ssh://ilial@review-android.quicinc.com:29418/platform/hardware/qcom/bt HEAD:refs/for/jb_2.6
+
+hardware/qcom/display
+git push ssh://ilial@review-android.quicinc.com:29418/platform/hardware/qcom/display HEAD:refs/for/LA.HB.1.3.1
+
+
+Checkpatch
+kernel/scripts/checkpatch.pl
+
+# Create branch main and branch AU..., sync to AU and switch to AU 
+repo forall -c 'git checkout AU344 || git checkout -b main && git checkout AU_LINUX_ANDROID_JB_MR1.04.02.02.049.344 && git checkout -b AU344'
+
+repo forall -c 'git config -l | grep project | cut -d= -f2; git checkout -b LA.BR.1.1.2.05.00.02.028.102 AU_LINUX_ANDROID_LA.BR.1.1.2.05.00.02.028.102'
+repo forall -c 'git config -l | grep project | cut -d= -f2; git checkout -b LA.HB.1.3.2.06.00.01.214.003 AU_LINUX_ANDROID_LA.HB.1.3.2.06.00.01.214.003'
+
+gitk --max-count=100 --all
+
+
+
+
+
+
+
+
+
+# Start ethernet in Android
+netcfg eth0 dhcp
+setprop net.eth0.gw 10.18.166.1
+/data/busybox/busybox route add default gw 10.18.166.1 eth0
+ndc resolver setifdns eth0 localhost 129.46.228.20 129.46.230.44
+ndc resolver setdefaultif eth0
+
+
+
+
+
+
+#OPEN EMBEDDED
+
+cd <CODEBASE>
+repo init -u git://codeaurora.org/quic/imm/manifest.git -b IMM.LE.1.0 -m IMM.LE.1.0-00200-8x16.0.xml --repo-url=git://codeaurora.org/tools/repo.git --repo-branch=caf-stable
+
+export OE_MACHINE="dragonboard-410c"
+export BUILD_NUMBER=IMM.LE.1.0-00200-8x16
+export IMAGES="rpb-desktop-image"
+QCOM_EULA=1 MACHINE=${OE_MACHINE} source ./setup-environment build
+echo "IMAGE_NAME_append = \"-${BUILD_NUMBER}\"" >> conf/local.conf
+bitbake ${IMAGES}
+
+# install gerrit hooks
+scp -p -P 29418 review-android.quicinc.com:hooks/commit-msg .git/hooks/
+
+git push ssh://review-android.quicinc.com:29418/imm/kernel HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/imm/kernel HEAD:refs/for/IMM.LE.1.0_dev
+git push ssh://review-android.quicinc.com:29418/kernel/lk HEAD:refs/for/IMM.LE.1.0 
+git push ssh://review-android.quicinc.com:29418/imm/meta-openembedded HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/imm/meta-qcom HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/le/manifest HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/imm/sources HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/imm/sources/diag HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/imm/qcom-oe-setup HEAD:refs/for/IMM.LE.1.0
+git push ssh://review-android.quicinc.com:29418/platform/vendor/qcom-proprietary/release HEAD:refs/for/IMM.LE.1.0
+git push ssh://review.linaro.org:29418/openembedded/meta-backports HEAD:refs/for/morty
+
+git checkout remotes/origin/IMM.LE.1.0 -b IMM.LE.1.0
+git merge --no-ff remotes/origin/kernel/release/qcomlt-4.4 remotes/origin/IMM.LE.1.0
+git gui
+git push ssh://review-android.quicinc.com:29418/imm/kernel HEAD:refs/for/IMM.LE.1.0
+
+#   celster, khoale, nbobba, visweswa, c_yanivn, c_asedla, alexf
+celster, c_vpichi, nbobba, kuldeepp, 
+
+git config --global sendemail.smtpuser ilialin
+git config --global sendemail.smtpserver smtp.codeaurora.org
+git config --global sendemail.smtpencryption ssl
+git config --global sendemail.smtpserverport 465
+git config --global sendemail.smtppass Ig2h2hig
+git format-patch -1
+git send-email --to='openembedded-devel@lists.openembedded.org' --cc=celster@codeaurora.org --cc=nicolas.dechesne@linaro.org --subject-prefix=oe][meta-oe][PATCH 0001-libndp-Add-mirror-sites.patch
+
+git send-email -1 --annotate --to=qcomlt-patches@lists.linaro.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org
+
+git send-email -10 --annotate --cover-letter --to=linux-clk@vger.kernel.org --to=linux-arm-kernel@lists.infradead.org --to=linux-arm-msm@vger.kernel.org --to=sboyd@codeaurora.org --cc=mark.rutland@arm.com --cc=will.deacon@arm.com --cc=rnayak@codeaurora.org --cc=qualcomm-lt@lists.linaro.org --cc=ilialin@codeaurora.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org
+
+git format-patch -v2 -11 --cover-letter -o ../cpufreq_for_mainline_2
+git send-email --to=linux-clk@vger.kernel.org --to=linux-arm-kernel@lists.infradead.org --to=linux-arm-msm@vger.kernel.org --to=sboyd@codeaurora.org --cc=devicetree@vger.kernel.org --cc=mark.rutland@arm.com --cc=will.deacon@arm.com --cc=rnayak@codeaurora.org --cc=ilialin@codeaurora.org --cc=amit.kucheria@linaro.org --cc=nicolas.dechesne@linaro.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org ../cpufreq_for_mainline_2
+
+git format-patch -v3 -10 --cover-letter -o ../cpufreq_for_mainline_3
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_3/*.patch
+git send-email --to=linux-clk@vger.kernel.org --to=linux-arm-kernel@lists.infradead.org --to=linux-arm-msm@vger.kernel.org --to=sboyd@codeaurora.org --cc=devicetree@vger.kernel.org --cc=robh@kernel.org --cc=mark.rutland@arm.com --cc=will.deacon@arm.com --cc=rnayak@codeaurora.org --cc=ilialin@codeaurora.org --cc=amit.kucheria@linaro.org --cc=nicolas.dechesne@linaro.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org ../cpufreq_for_mainline_3
+
+git format-patch -v4 -14 --cover-letter -o ../cpufreq_for_mainline_4
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_4/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--to=viresh.kumar@linaro.org \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=linux-clk@vger.kernel.org \
+--to=devicetree@vger.kernel.org \
+--to=linux-kernel@vger.kernel.org \
+--to=linux-pm@vger.kernel.org \
+--to=linux-arm-msm@vger.kernel.org \
+--to=linux-soc@vger.kernel.org \
+--to=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_4
+
+git format-patch -v5 -14 --cover-letter -o ../cpufreq_for_mainline_5
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_5/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--to=viresh.kumar@linaro.org \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-pm@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_5
+
+
+git format-patch -v6 -14 --cover-letter -o ../cpufreq_for_mainline_6
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_6/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=viresh.kumar@linaro.org \
+--to=nm@ti.com \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=rjw@rjwysocki.net \
+--to=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-pm@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_6
+
+git format-patch -v7 -14 --cover-letter -o ../cpufreq_for_mainline_7
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_7/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=viresh.kumar@linaro.org \
+--to=nm@ti.com \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=rjw@rjwysocki.net \
+--to=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-pm@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_7
+
+git format-patch -v8 -15 --cover-letter -o ../cpufreq_for_mainline_8
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_8/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=viresh.kumar@linaro.org \
+--to=nm@ti.com \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=rjw@rjwysocki.net \
+--to=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-pm@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_8
+
+git format-patch -v9 -15 --cover-letter -o ../cpufreq_for_mainline_9
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_for_mainline_9/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=viresh.kumar@linaro.org \
+--to=nm@ti.com \
+--to=lgirdwood@gmail.com \
+--to=broonie@kernel.org \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--to=rjw@rjwysocki.net \
+--to=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-pm@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=rnayak@codeaurora.org \
+--cc=ilialin@codeaurora.org \
+--cc=amit.kucheria@linaro.org \
+--cc=nicolas.dechesne@linaro.org \
+--cc=celster@codeaurora.org \
+--cc=tfinkel@codeaurora.org \
+../cpufreq_for_mainline_9
+
+
+git format-patch -v10 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_10
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_10/*.patch
+git send-email \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--to=linux-pm@vger.kernel.org \
+--to=devicetree@vger.kernel.org \
+--to=linux-kernel@vger.kernel.org \
+../cpufreq_driver_bindings_for_mainline_10
+
+
+git format-patch -v11 -8 --cover-letter -o ../clocks_for_mainline_11
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../clocks_for_mainline_11/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=will.deacon@arm.com \
+--cc=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=vireshk@kernel.org \
+--cc=ilialin@codeaurora.org \
+../clocks_for_mainline_11
+
+
+git format-patch -v12 -8 --cover-letter -o ../clocks_for_mainline_12
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../clocks_for_mainline_12/*.patch
+git send-email \
+--to=mturquette@baylibre.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=will.deacon@arm.com \
+--cc=linux-clk@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=vireshk@kernel.org \
+--cc=ilialin@codeaurora.org \
+../clocks_for_mainline_12
+
+
+git format-patch -v11 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_11
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_11/*.patch
+git send-email \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--cc=linux-pm@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_driver_bindings_for_mainline_11
+
+
+git format-patch -v12 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_12
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_12/*.patch
+git send-email \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--cc=linux-pm@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_driver_bindings_for_mainline_12
+
+
+git format-patch -v13 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_13
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_13/*.patch
+git send-email \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--cc=linux-pm@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_driver_bindings_for_mainline_13
+
+
+git format-patch -v14 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_14
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_14/*.patch
+git send-email \
+--to=ilia.lin@gmail.com \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--cc=linux-pm@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_driver_bindings_for_mainline_14
+
+
+git format-patch -v15 -2 --cover-letter -o ../cpufreq_driver_bindings_for_mainline_15
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_driver_bindings_for_mainline_14/*.patch
+git send-email \
+--to=ilia.lin@gmail.com \
+--to=vireshk@kernel.org \
+--to=nm@ti.com \
+--to=sboyd@kernel.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=rjw@rjwysocki.net \
+--cc=linux-pm@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_driver_bindings_for_mainline_15
+
+
+git format-patch -v11 -2 --cover-letter -o ../cpufreq_dt_for_mainline_11
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../cpufreq_dt_for_mainline_11/*.patch
+git send-email \
+--to=andy.gross@linaro.org \
+--to=david.brown@linaro.org \
+--to=robh@kernel.org \
+--to=mark.rutland@arm.com \
+--to=catalin.marinas@arm.com \
+--to=will.deacon@arm.com \
+--cc=linux-arm-msm@vger.kernel.org \
+--cc=linux-soc@vger.kernel.org \
+--cc=devicetree@vger.kernel.org \
+--cc=linux-arm-kernel@lists.infradead.org \
+--cc=linux-kernel@vger.kernel.org \
+--cc=ilialin@codeaurora.org \
+../cpufreq_dt_for_mainline_11
+
+
+
+
+git send-email --to=linux-arm-msm@vger.kernel.org --cc=andy.gross@linaro.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org --cc=nicolas.dechesne@linaro.org --cc=srinivas.kandagatla@linaro.org 0001-dt-qcom-Fix-SPI5-config-on-8996.patch
+
+git format-patch -2 --cover-letter -o ../saw_for_mainline
+./scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats ../saw_for_mainline/*.patch
+git send-email --to=linux-kernel@vger.kernel.org --to=devicetree@vger.kernel.org --to=lgirdwood@gmail.com --to=broonie@kernel.org --to=robh@kernel.org --to=mark.rutland@arm.com --cc=ilialin@codeaurora.org --cc=amit.kucheria@linaro.org --cc=nicolas.dechesne@linaro.org --cc=celster@codeaurora.org --cc=tfinkel@codeaurora.org ../saw_for_mainline
+
+
+
+# BUILD STANDALONE KERNEL
+
+export ARCH=arm64
+export CROSS_COMPILE=/local/mnt/workspace/gcc-linaro-aarch64-linux-gnu-4.9-2014.09_linux/bin/aarch64-linux-gnu-
+export CROSS_COMPILE=/local/mnt/workspace/gits/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+export CROSS_COMPILE=/usr/bin/aarch64-linux-gnu-
+export CROSS_COMPILE=/local/mnt/workspace/gcc-linaro-4.9-2015.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+make msm_defconfig 
+make EXTRA_CFLAGS='-I$(src)' Image.gz dtbs
+make -j4 modules KERNELRELEASE=`make kernelversion`-linaro-lt-qcom
+export PATH=/local/mnt/workspace/gits/skales:$PATH
+dtbTool -o dt.img -s 4096 arch/arm64/boot/dts/qcom/
+export cmdline="root=/dev/sde9 rw rootwait console=ttyHSL0,115200,n8"
+mkbootimg --kernel arch/arm64/boot/Image \
+          --ramdisk initrd.img-4.11.0-qcomlt \
+          --output boot.img \
+          --dt dt.img \
+          --pagesize 4096 \
+          --base 0x80000000 \
+          --cmdline "$cmdline"
+
+export ARCH=arm64
+export CROSS_COMPILE=/usr/bin/aarch64-linux-gnu-
+touch kernel/configs/distro.config
+make defconfig distro.config
+make -j4 Image dtbs KERNELRELEASE=`make kernelversion`-linaro-lt-qcom
+make -j4 modules KERNELRELEASE=`make kernelversion`-linaro-lt-qcom
+export PATH=/local/mnt/workspace/gits/skales:$PATH
+dtbTool -o dt.img -s 4096 arch/arm64/boot/dts/qcom/
+export cmdline="root=/dev/sde9 rw rootwait console=ttyMSM0,115200n8"
+mkbootimg --kernel arch/arm64/boot/Image \
+          --ramdisk initrd.img-4.11.0-qcomlt \
+          --output boot.img \
+          --dt dt.img \
+          --pagesize 4096 \
+          --base 0x80000000 \
+          --cmdline "$cmdline"
+
+fastboot boot boot.img 
+while true; do fastboot boot boot.img; done
+
+
+
+export ARCH=arm64
+export CROSS_COMPILE=/local/mnt/workspace/gcc-linaro-7.2.1-2017.11-i686_aarch64-linux-gnu/bin/aarch64-linux-gnu-
+make -j4 Image dtbs
+make -j4 modules
+cp arch/arm64/boot/Image arch/${ARCH}/boot/Image.backup
+cat arch/arm64/boot/Image.backup arch/arm64/boot/dts/qcom/apq8096-db820c.dtb > arch/${ARCH}/boot/Image
+rm -f arch/arm64/boot/Image.backup
+export cmdline="root=/dev/sda7 rw rootwait console=ttyMSM0,115200n8"
+mkbootimg --kernel arch/arm64/boot/Image \
+          --ramdisk initrd.img-4.11.0-qcomlt \
+          --output boot.img \
+          --pagesize 4096 \
+          --base 0x80000000 \
+          --cmdline "$cmdline"
+
+
+mkbootimg --kernel /tmp/zImage-dtb --ramdisk initrd --output /tmp/boot-qcomlt-4.14.img --pagesize 4096 --base "0x80000000"  --cmdline "console=ttyMSM0,115200n8 root=/dev/disk/by-partlabel/rootfs rootwait rw  systemd.unit=multi-user.target"
+
+
+/local/mnt/workspace/opkg-utils/opkg-make-index . > Packages
+
+git am ../camss-20171208/00*.patch
+
+
+mkdir mymanifest
+cp IMM.LE.1.0-99999-8x16.xml mymanifest/
+cd mymanifest/
+git init
+git add IMM.LE.1.0-99999-8x16.xml
+git commit -m "IMM Local Manifest"
+mkdir IMM.LE.1.0
+cd IMM.LE.1.0
+repo init -u ../mymanifest/ -m IMM.LE.1.0-99999-8x16.xml
+repo sync
+
+
+
+cat /sys/kernel/debug/regmap/0-00/registers | grep 505c
+505c: 20
+
+
+
+linux-linaro-qcomlt -4.4-r0
+
+
+
+Play mp3 file:
+gst-launch-1.0 -v playbin uri=file:///home/linaro/some-file.mp3
+ 
+Play video file:
+gst-launch-1.0 -v filesrc location="/mnt/big_buck_bunny_1080p_h264.mov" ! qtdemux name=demuxer     demuxer. ! queue ! avdec_aac ! audioconvert ! audioresample ! alsasink device='plughw:0,0'     demuxer. ! queue ! h264parse ! avdec_h264 ! glimagesink
+
+! qtdemux name=demuxer     demuxer. ! queue ! avdec_aac ! audioconvert ! audioresample ! alsasink device='hw:0,0'     demuxer. ! queue ! h264parse ! avdec_h264 ! glimagesink
+
+gst-launch-1.0 -v filesrc location="/mnt/bbb_sunflower_1080p_30fps_normal.mp4" ! qtdemux name=demuxer     demuxer. ! queue ! avdec_aac ! audioconvert ! audioresample ! alsasink device='plughw:0,0'     demuxer. ! queue ! h264parse ! avdec_h264 ! glimagesink
+
+gst-launch-1.0 -v filesrc location="/mnt/bbb_sunflower_1080p_60fps_normal.mp4" ! qtdemux name=demuxer     demuxer. ! queue ! avdec_aac ! audioconvert ! audioresample ! alsasink device='plughw:0,0'     demuxer. ! queue ! h264parse ! avdec_h264 ! glimagesink
+
+
+# === Bluetooth ======================================
+
+rfkill unblock bluetooth
+bluetoothctl 
+
+
+hexdump -C /proc/device-tree/smd/pronto/wcnss/wifi/local-mac-address | head -n1 | cut -b11-27 | cut -d' ' -f1-6 --output-delimiter=:
+
+btmgmt public-addr 02:00:ba:4e:22:29
+
+btmgmt public-addr `hexdump -C /proc/device-tree/smd/pronto/wcnss/wifi/local-mac-address | head -n1 | cut -b11-27 | cut -d' ' -f1-6 --output-delimiter=:`
+
+/bin/sh -c "MAC=`hexdump -C /proc/device-tree/smd/pronto/wcnss/wifi/local-mac-address | head -n1 | cut -b11-27 | cut -d\' \' -f1-6 --output-delimiter=:`; /usr/bin/btmgmt public-addr $MAC"
+
+
+/bin/sh -c "MAC=$(hexdump -C /proc/device-tree/smd/pronto/wcnss/wifi/local-mac-address | head -n1 | cut -b11-27 | cut -d' ' -f1-6 --output-delimiter=:); echo $MAC"
+
+
+
+
+
+systemctl status wcnss-bt-mac-update.service
+systemctl disable wcnss-bt-mac-update.service
+systemctl enable wcnss-bt-mac-update.service
+systemctl restart wcnss-bt-mac-update.service
+
+
+
+
+
+
+# === MODEM ==========================
+opkg install wvdial usb-modeswitch modemmanager
+
+---------------------------------------------------------------
+root@dragonboard-410c:~# cat /etc/usb-modeswitch-x220d.conf
+# Alcatel X220D
+
+DefaultVendor=  0x1bbb
+DefaultProduct= 0xf000
+
+TargetVendor=   0x1bbb
+TargetProduct=  0x0017
+
+MessageContent="55534243123456788000000080000606f50402527000000000000000000000"
+
+---------------------------------------------------------------
+root@dragonboard-410c:~# cat /etc/udev/rules.d/50-x220d.rules 
+SUBSYSTEM=="usb", SYSFS{idVendor}=="1bbb", SYSFS{idProduct}=="f000", RUN+="/usr/sbin/usb_modeswitch -c /etc/usb-modeswitch-x220d.conf"
+SUBSYSTEM=="usb", SYSFS{idVendor}=="1bbb", SYSFS{idProduct}=="0017", RUN+="/sbin/modprobe usbserial vendor=0x1bbb product=0x0017"
+
+---------------------------------------------------------------
+root@dragonboard-410c:~# cat /etc/wvdial.conf
+[Dialer Defaults]
+# Modem = /dev/serial/by-id/usb-USBModem_HSPA_Data_Card_1234567890ABCDEF-if05-port0
+# Or just use /dev/ttyUSB4
+Modem = /dev/ttyUSB4
+ISDN = 0
+Modem Type = Analog Modem
+#Baud = 9600
+Baud = 460800
+#Init1 = ATZ
+Init1 = ATX3
+#Init2 = ATQ0 V1 E1 S0=0 &C1 &D2 +FCLASS=0
+Init2 = AT&F Q0 V1 E0 S0=0 &C1 &D2 +FCLASS=0
+#Init3 = AT+CGDCONT=1,"IP","uinternet"
+Init3 = at+cgdcont=1,"IP","uinternet"
+Phone = *99#
+Dial Attempts = 5
+Stupid Mode = on
+Dial Command = ATDT
+Idle Seconds = 7200
+Ask Passwords = 0
+New PPPD = 1
+Check Def Route = 1
+Auto DNS = on
+Username = ''
+Password = ''
+# It seems this value is practically ignored for Orange (not for Pelephone). But it must not
+# be empty. Otherwise wvdial refuses to dial
+
+
+
+/usr/sbin/usb_modeswitch -c /etc/usb-modeswitch-x220d.conf
+wvdial&
+
+# === Modem with NetworkManager =========================
+nmcli -p c add type gsm ifname ttyUSB4 apn uinternet
+
+
+
+# Mainline Kernel
+make distclean
+make ARCH=arm64 defconfig
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make all
+
+
+# === SlickEdit =========================================
+5830@license-wan-rtp1
+
+5830@license-wan-1-encnaa
+
+
+# === CPU load ==========================================
+fulload() { dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null | dd if=/dev/zero of=/dev/null & }; fulload; read; killall dd
+
+for i in $(cat /proc/cpuinfo | awk '/^processor/{print $3}'); do taskset -c $i mhz ; done
+
+while true; do sh 24h-stress-test.sh -t stress_ng -d 120; sleep 30; done
+
+cpufreq-info -f -c0; cpufreq-info -f -c1; cpufreq-info -f -c2; cpufreq-info -f -c3; cat /sys/devices/virtual/thermal/thermal_zone0/temp; cat /sys/devices/virtual/thermal/thermal_zone1/temp; cat /sys/devices/virtual/thermal/thermal_zone2/temp; cat /sys/devices/virtual/thermal/thermal_zone3/temp;
+
+
+
+
